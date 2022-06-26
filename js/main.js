@@ -1,21 +1,3 @@
-function getRandomPositiveInteger (a, b) {
-  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
-  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-}
-
-function getRandomPositiveFloat (a, b, digits = 1) {
-  const lower = Math.min(Math.abs(a), Math.abs(b));
-  const upper = Math.max(Math.abs(a), Math.abs(b));
-  const result = Math.random() * (upper - lower) + lower;
-  return +result.toFixed(digits);
-}
-
-const getRandomElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
-
-const getAvatar = () => `img/avatars/user${  getRandomPositiveInteger (1, 10)  }.png`;
-
 const TITLE_OF_OFFER = [
   'Захолустье',
   'Хижина',
@@ -74,47 +56,102 @@ const PHOTOS_OF_OFFER = [
 
 const SIMILAR_OFFERS_COUNT = 10;
 
-function shuffle() {
-  for (let i = FEATURES_OF_OFFER.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [FEATURES_OF_OFFER[i], FEATURES_OF_OFFER[j]] = [FEATURES_OF_OFFER[j], FEATURES_OF_OFFER[i]];
+const LOCATION_LENGTH = 5;
+
+const AvatarCount = {
+  min: 1,
+  max: 10
+};
+
+const PriceCount = {
+  min: 50,
+  max: 100000
+};
+
+const LocationCount = {
+  lat: {
+    min: 35.65,
+    max: 35.7
+  },
+  lng: {
+    min: 139.7,
+    max:  139.9
   }
-  return FEATURES_OF_OFFER;
-}
+};
+
+const RoomsCount = {
+  min: 1,
+  max: 15
+};
+
+const GuestCount = {
+  min: 1,
+  max: 20
+};
+
+const getRandomPositiveInteger = (a, b) => {
+  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
+  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const result = Math.random() * (upper - lower + 1) + lower;
+  return Math.floor(result);
+};
+
+const getRandomPositiveFloat = (a, b, digits = 1) => {
+  const lower = Math.min(Math.abs(a), Math.abs(b));
+  const upper = Math.max(Math.abs(a), Math.abs(b));
+  const result = Math.random() * (upper - lower) + lower;
+  return +result.toFixed(digits);
+};
+
+const getRandomElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
+
+const getAvatar = () => `img/avatars/user${  getRandomPositiveInteger (AvatarCount.min, AvatarCount.max)  }.png`;
+
+const shuffle = () => {
+  for (let i = Array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [Array[i], Array[j]] = [Array[j], Array[i]];
+  }
+  return Array;
+};
 
 const getFeatures = () => {
   shuffle(FEATURES_OF_OFFER);
-  return FEATURES_OF_OFFER.slice(0, getRandomPositiveInteger(0, 5));
+  return FEATURES_OF_OFFER.slice(0, getRandomPositiveInteger(0, FEATURES_OF_OFFER.length - 1));
 };
 
-const createOffer = () => (
-  {
+const getPhotos = () => {
+  shuffle(PHOTOS_OF_OFFER);
+  return PHOTOS_OF_OFFER.slice(0, getRandomPositiveInteger(0, PHOTOS_OF_OFFER.length - 1));
+};
+
+const createOffer = () => {
+  const location = {
+    lat: getRandomPositiveFloat(LocationCount.lat.min, LocationCount.lat.max, LOCATION_LENGTH),
+    lng: getRandomPositiveFloat(LocationCount.lng.min, LocationCount.lng.max, LOCATION_LENGTH),
+  };
+
+  return {
     author: {
-      avatar: getAvatar,
+      avatar: getAvatar(),
     },
     offer: {
       title: getRandomElement(TITLE_OF_OFFER),
-      address: Object.values(location),
-      price: getRandomPositiveInteger(50, 100000),
+      address: `${location.lat}, ${location.lng}`,
+      price: getRandomPositiveInteger(PriceCount.min, PriceCount.max),
       type: getRandomElement(TYPE_OF_OFFER),
-      rooms: getRandomPositiveInteger(1, 15),
-      guests: getRandomPositiveInteger(1, 20),
+      rooms: getRandomPositiveInteger(GuestCount.min, GuestCount.max),
+      guests: getRandomPositiveInteger(RoomsCount.min, RoomsCount.max),
       checkin: getRandomElement(CHECK_IN_AND_OUT),
       checkout: getRandomElement(CHECK_IN_AND_OUT),
       features: getFeatures(),
       description: getRandomElement(DESCRIPTION_OF_OFFER),
-      photos: getRandomElement(PHOTOS_OF_OFFER),
+      photos: getPhotos(),
     },
-    location: {
-      lat: getRandomPositiveFloat(35.65000, 35.70000, 5),
-      lng: getRandomPositiveFloat(139.70000, 139.80000, 5),
-    },
-  }
-);
+    location,
+  };
+};
 
-createOffer();
+const similarOffers = () => Array.from({length: SIMILAR_OFFERS_COUNT}, createOffer);
 
-
-// const similarOffers = Array.from({length: SIMILAR_OFFERS_COUNT}, createOffer);
-// способ из демки, не работает ...
-// similarOffers();
+console.log(similarOffers());
