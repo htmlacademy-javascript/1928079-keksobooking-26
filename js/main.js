@@ -83,7 +83,7 @@ const GuestCount = {
   max: 20
 };
 
-let index = 0;
+let offerIndex = 0;
 
 const getRandomPositiveInteger = (a, b) => {
   const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
@@ -127,7 +127,7 @@ const getPhotos = () => {
 };
 
 const createOffer = () => {
-  index++;
+  offerIndex++;
   const location = {
     lat: getRandomPositiveFloat(LocationCount.lat.min, LocationCount.lat.max, LOCATION_LENGTH),
     lng: getRandomPositiveFloat(LocationCount.lng.min, LocationCount.lng.max, LOCATION_LENGTH),
@@ -135,10 +135,10 @@ const createOffer = () => {
 
   return {
     author: {
-      avatar: getAvatar(index),
+      avatar: getAvatar(offerIndex),
     },
     offer: {
-      title: TITLE_OF_OFFER[index - 1],
+      title: TITLE_OF_OFFER[offerIndex - 1],
       address: `${location.lat}, ${location.lng}`,
       price: getRandomPositiveInteger(PriceCount.min, PriceCount.max),
       type: getRandomElement(TYPE_OF_OFFER),
