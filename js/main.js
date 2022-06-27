@@ -8,8 +8,7 @@ const TITLE_OF_OFFER = [
   'Пентхаус',
   'Замок',
   'Комната',
-  'Дворец',
-  'Дюплекс'
+  'Дворец'
 ];
 
 const TYPE_OF_OFFER = [
@@ -58,11 +57,6 @@ const SIMILAR_OFFERS_COUNT = 10;
 
 const LOCATION_LENGTH = 5;
 
-const AvatarCount = {
-  min: 1,
-  max: 10
-};
-
 const PriceCount = {
   min: 50,
   max: 100000
@@ -89,6 +83,8 @@ const GuestCount = {
   max: 20
 };
 
+let index = 0;
+
 const getRandomPositiveInteger = (a, b) => {
   const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
   const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
@@ -105,14 +101,19 @@ const getRandomPositiveFloat = (a, b, digits = 1) => {
 
 const getRandomElement = (elements) => elements[getRandomPositiveInteger(0, elements.length - 1)];
 
-const getAvatar = () => `img/avatars/user${  getRandomPositiveInteger (AvatarCount.min, AvatarCount.max)  }.png`;
-
-const shuffle = () => {
-  for (let i = Array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [Array[i], Array[j]] = [Array[j], Array[i]];
+const getAvatar = (index) => {
+  if (index < 10) {
+    index = `0${index}`;
   }
-  return Array;
+  return `img/avatars/user${index}.png`;
+};
+
+const shuffle = (elements) => {
+  for (let i = elements.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [elements[i], elements[j]] = [elements[j], elements[i]];
+  }
+  return elements;
 };
 
 const getFeatures = () => {
@@ -126,6 +127,7 @@ const getPhotos = () => {
 };
 
 const createOffer = () => {
+  index++;
   const location = {
     lat: getRandomPositiveFloat(LocationCount.lat.min, LocationCount.lat.max, LOCATION_LENGTH),
     lng: getRandomPositiveFloat(LocationCount.lng.min, LocationCount.lng.max, LOCATION_LENGTH),
@@ -133,10 +135,10 @@ const createOffer = () => {
 
   return {
     author: {
-      avatar: getAvatar(),
+      avatar: getAvatar(index),
     },
     offer: {
-      title: getRandomElement(TITLE_OF_OFFER),
+      title: TITLE_OF_OFFER[index - 1],
       address: `${location.lat}, ${location.lng}`,
       price: getRandomPositiveInteger(PriceCount.min, PriceCount.max),
       type: getRandomElement(TYPE_OF_OFFER),
@@ -154,4 +156,4 @@ const createOffer = () => {
 
 const similarOffers = () => Array.from({length: SIMILAR_OFFERS_COUNT}, createOffer);
 
-console.log(similarOffers());
+similarOffers();
