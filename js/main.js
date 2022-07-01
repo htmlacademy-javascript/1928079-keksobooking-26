@@ -1,3 +1,2 @@
-import {createOffers} from './data.js';
+import {drawThumbnails} from './draw-thumbnails';
 
-createOffers();
