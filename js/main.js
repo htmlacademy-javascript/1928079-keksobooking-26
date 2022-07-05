@@ -1,2 +1,3 @@
-import {drawThumbnails} from './draw-thumbnails';
+import {renderCard} from './create-card.js';
 
+renderCard();
