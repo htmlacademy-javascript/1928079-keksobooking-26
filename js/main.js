@@ -1,3 +1,3 @@
-import {createOffers} from './data.js';
+import {renderCard} from './create-card.js';
 
-createOffers();
+renderCard();
