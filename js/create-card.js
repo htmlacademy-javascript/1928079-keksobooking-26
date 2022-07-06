@@ -1,4 +1,4 @@
-import {createOffers} from './data.js'
+import {createOffers} from './data.js';
 
 const TYPES_OF_HOUSING = {
   flat: 'Квартира',
@@ -35,7 +35,7 @@ const innerPriceContent = (parent, cssClass, data) => {
     element.remove();
     return;
   }
-  element.textContent = ${data} ₽/ночь;
+  element.textContent = `${data} ₽/ночь`;
 };
 
 const innerTimeContent = (parent, cssClass, dataIn, dataOut) => {
@@ -46,11 +46,11 @@ const innerTimeContent = (parent, cssClass, dataIn, dataOut) => {
     return;
   }
 
-  const inText = dataIn ? Заезд после ${dataIn} : '';
-  const outText = dataOut ? выезд до ${dataOut} : '';
+  const inText = dataIn ? `Заезд после ${dataIn}` : '';
+  const outText = dataOut ? `выезд до ${dataOut}` : '';
   const divider = dataIn && dataOut ? ', ' : '';
 
-  element.textContent = ${inText}${divider}${outText};
+  element.textContent = `${inText}${divider}${outText}`;
 };
 
 const innerRoomContent = (parent, cssClass, room, guest) => {
@@ -61,11 +61,11 @@ const innerRoomContent = (parent, cssClass, room, guest) => {
     return;
   }
 
-  const rooms = room ? ${room} комнаты : '';
-  const guests = guest ? для ${guest} гостей : '';
+  const rooms = room ? `${room} комнаты` : '';
+  const guests = guest ? `для ${guest} гостей` : '';
   const divider = room && guest ? ' ' : '';
 
-  element.textContent = ${rooms}${divider}${guests};
+  element.textContent = `${rooms}${divider}${guests}`;
 };
 
 const innerPhotoContent = (parent, cssClassParent, cssClassChild, data) => {
@@ -94,7 +94,7 @@ const innerFeaturesContent = (parent, cssClass, data) => {
   const elementList = parent.querySelector(cssClass).children;
   [...elementList].forEach((elementItem) => {
     const isNecessary = data.some(
-      (featureClass) => elementItem.classList.contains(popup__feature--${featureClass})
+      (featureClass) => elementItem.classList.contains(`popup__feature--${featureClass}`)
     );
 
     if (!isNecessary) {
