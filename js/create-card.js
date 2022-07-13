@@ -1,5 +1,3 @@
-import {createOffers} from './data.js';
-
 const TYPES_OF_HOUSING = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -118,10 +116,4 @@ const createCard = (({offer, author}) => {
   return advertElement;
 });
 
-const renderCard = () => {
-  const data = createOffers()[0];
-  const mapCanvas = document.querySelector('#map-canvas');
-  mapCanvas.append(createCard(data));
-};
-
-export {createCard, renderCard};
+export {createCard};
