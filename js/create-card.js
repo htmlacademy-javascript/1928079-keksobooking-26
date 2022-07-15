@@ -8,7 +8,7 @@ const TYPES_OF_HOUSING = {
 
 const advertCard = document.querySelector('#card').content.querySelector('.popup');
 
-const innerSimpleText = (parent, cssClass, data) => {
+const pasteSimpleText = (parent, cssClass, data) => {
   const element = parent.querySelector(cssClass);
 
   if(!data) {
@@ -18,7 +18,7 @@ const innerSimpleText = (parent, cssClass, data) => {
   element.textContent = data;
 };
 
-const innerSimpleSrc = (parent, cssClass, data) => {
+const pasteSimpleSrc = (parent, cssClass, data) => {
   const  element = parent.querySelector(cssClass);
   if(!data) {
     element.remove();
@@ -27,7 +27,7 @@ const innerSimpleSrc = (parent, cssClass, data) => {
   element.src = data;
 };
 
-const innerPriceContent = (parent, cssClass, data) => {
+const pastePriceContent = (parent, cssClass, data) => {
   const  element = parent.querySelector(cssClass);
   if(!data) {
     element.remove();
@@ -36,7 +36,7 @@ const innerPriceContent = (parent, cssClass, data) => {
   element.textContent = `${data} ₽/ночь`;
 };
 
-const innerTimeContent = (parent, cssClass, dataIn, dataOut) => {
+const pasteTimeContent = (parent, cssClass, dataIn, dataOut) => {
   const  element = parent.querySelector(cssClass);
 
   if(!dataIn && !dataOut) {
@@ -51,7 +51,7 @@ const innerTimeContent = (parent, cssClass, dataIn, dataOut) => {
   element.textContent = `${inText}${divider}${outText}`;
 };
 
-const innerRoomContent = (parent, cssClass, room, guest) => {
+const pasteRoomContent = (parent, cssClass, room, guest) => {
   const  element = parent.querySelector(cssClass);
 
   if(!room && !guest) {
@@ -66,7 +66,7 @@ const innerRoomContent = (parent, cssClass, room, guest) => {
   element.textContent = `${rooms}${divider}${guests}`;
 };
 
-const innerPhotoContent = (parent, cssClassParent, cssClassChild, data) => {
+const pastePhotoContent = (parent, cssClassParent, cssClassChild, data) => {
   const parentElement = parent.querySelector(cssClassParent);
   const element = parent.querySelector(cssClassChild);
   parentElement.innerHTML = '';
@@ -82,7 +82,7 @@ const innerPhotoContent = (parent, cssClassParent, cssClassChild, data) => {
   });
 };
 
-const innerFeaturesContent = (parent, cssClass, data) => {
+const pasteFeaturesContent = (parent, cssClass, data) => {
   const element = parent.querySelector(cssClass);
   if(!data) {
     element.remove();
@@ -103,16 +103,16 @@ const innerFeaturesContent = (parent, cssClass, data) => {
 
 const createCard = (({offer, author}) => {
   const advertElement = advertCard.cloneNode(true);
-  innerSimpleSrc(advertElement, '.popup__avatar', author.avatar);
-  innerSimpleText(advertElement, '.popup__title', offer.title);
-  innerSimpleText(advertElement, '.popup__text--address', offer.address);
-  innerSimpleText(advertElement, '.popup__type', TYPES_OF_HOUSING[offer.type]);
-  innerSimpleText(advertElement, '.popup__description', offer.description);
-  innerPriceContent(advertElement, '.popup__text--price', offer.price);
-  innerTimeContent(advertElement, '.popup__text--time', offer.checkin, offer.checkout);
-  innerRoomContent(advertElement, '.popup__text--capacity', offer.rooms, offer.guests);
-  innerPhotoContent(advertElement, '.popup__photos', '.popup__photo', offer.photos);
-  innerFeaturesContent (advertElement, '.popup__features', offer.features);
+  pasteSimpleSrc(advertElement, '.popup__avatar', author.avatar);
+  pasteSimpleText(advertElement, '.popup__title', offer.title);
+  pasteSimpleText(advertElement, '.popup__text--address', offer.address);
+  pasteSimpleText(advertElement, '.popup__type', TYPES_OF_HOUSING[offer.type]);
+  pasteSimpleText(advertElement, '.popup__description', offer.description);
+  pastePriceContent(advertElement, '.popup__text--price', offer.price);
+  pasteTimeContent(advertElement, '.popup__text--time', offer.checkin, offer.checkout);
+  pasteRoomContent(advertElement, '.popup__text--capacity', offer.rooms, offer.guests);
+  pastePhotoContent(advertElement, '.popup__photos', '.popup__photo', offer.photos);
+  pasteFeaturesContent (advertElement, '.popup__features', offer.features);
   return advertElement;
 });
 
