@@ -1,3 +1,5 @@
+import {sendData} from './api.js';
+
 const MAX_PRICE_HOUSING = 100000;
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -10,6 +12,7 @@ const typeRoom = formAdvert.querySelector('#type');
 const priceRoom = formAdvert.querySelector('#price');
 const timeIn = formAdvert.querySelector('#timein');
 const timeOut = formAdvert.querySelector('#timeout');
+const submitButton = document.querySelector('.ad-form__submit');
 
 const roomsToOption = {
   1: ['1'],
@@ -77,13 +80,17 @@ const onTypeRoomInputChange = () => {
   priceRoom.min = minHousingPrice[typeRoom.value];
 };
 
-const addFormListeners = () => {
+const addFormListeners = (onSuccess, onError) => {
   timeIn.addEventListener('change', onTimeInChange);
   timeOut.addEventListener('change', onTimeOutChange);
   typeRoom.addEventListener('change', onTypeRoomInputChange);
   formAdvert.addEventListener('submit', (evt) => {
-    if (!pristine.validate()) {
-      evt.preventDefault();
+    evt.preventDefault();
+
+    if (pristine.validate()) {
+      submitButton.disabled = true;
+      const formData = new FormData(formAdvert);
+      sendData(onSuccess, onError, formData);
     }
   });
 };
@@ -94,9 +101,9 @@ const addFormValidator = () => {
   pristine.addValidator(titleAdvert, validateTitleAdvert, getTitleError);
 };
 
-const setAdFormActions = () => {
+const setAdFormActions = (onSuccess, onError) => {
   addFormValidator();
-  addFormListeners();
+  addFormListeners(onSuccess, onError);
 };
 
 export {setAdFormActions};
