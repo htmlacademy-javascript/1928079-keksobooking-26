@@ -1,4 +1,4 @@
-const slider = () => {
+const initSlider = () => {
   const sliderElement = document.querySelector('.ad-form__slider');
   const valueElement = document.querySelector('#price');
   noUiSlider.create(sliderElement, {
@@ -24,4 +24,4 @@ const slider = () => {
   });
 };
 
-export {slider};
+export {initSlider};

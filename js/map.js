@@ -1,23 +1,31 @@
-import { createOffers } from './data.js';
+import { getData } from './api.js';
 import { setAdFormActions } from './ad-form.js';
-import { slider } from './slider.js';
+import { initSlider } from './slider.js';
 import { createCard } from './create-card.js';
 import { activateAdvertForm, activateMapFilterForm } from './page-states.js';
 import { addPhotoInputsListeners, clearImageBlocks } from './preload-images.js';
+import { renderGetErrorMessage, renderPostErrorMessage } from './error.js';
+import { filterData, setDataRanking } from './map-filter.js';
+import { renderSuccessMessage } from './success.js';
 
 const START_LOCATION = {
   lat: 	35.68172,
   lng: 139.75392,
 };
 const DECIMALS = 5;
-const OFFERS_COUNTER = 20;
-const offers = createOffers(OFFERS_COUNTER);
+const OFFERS_COUNTER = 10;
+const TIME_INTERVAL = 500;
+const MAP_ZOOM = 12;
+
+const sliderElement = document.querySelector('.ad-form__slider');
+const formFilter = document.querySelector('.map__filters');
 const resetButton = document.querySelector('.ad-form__reset');
 const addressInput = document.querySelector('#address');
 const interactiveMap = L.map('map-canvas');
 const markerGroup = L.layerGroup();
 let interactiveMarker;
 let marker;
+let timer;
 
 const setStartAddressValue = () => {
   addressInput.value = `${START_LOCATION.lat}, ${START_LOCATION.lng}`;
@@ -30,47 +38,74 @@ const setLocation = (target) => {
 
 const addMarkerGroup = (data) => {
   markerGroup.addTo(interactiveMap);
-  data.forEach((offer) => {
-    marker = L.marker(
-      offer.location,
-      {
-        icon: L.icon({
-          iconUrl: './img/pin.svg',
-          iconSize: [40, 40],
-          iconAnchor: [20, 40],
-        }),
-      },
-    );
-    marker
-      .addTo(markerGroup)
-      .bindPopup(createCard(offer));
-  });
+  setDataRanking(data)
+    .slice()
+    .filter(filterData)
+    .slice(0, OFFERS_COUNTER)
+    .forEach((offer) => {
+      marker = L.marker(
+        offer.location,
+        {
+          icon: L.icon({
+            iconUrl: './img/pin.svg',
+            iconSize: [40, 40],
+            iconAnchor: [20, 40],
+          }),
+        },
+      );
+      marker
+        .addTo(markerGroup)
+        .bindPopup(createCard(offer));
+    });
 };
 
 const onMarkerMove = (evt) => setLocation(evt.target);
 
+const resetMap = () => {
+  interactiveMarker.setLatLng(START_LOCATION);
+  interactiveMap.setView(START_LOCATION, MAP_ZOOM);
+};
+
 const onResetButtonClick = () => {
   setTimeout(() => setStartAddressValue());
   clearImageBlocks();
+  sliderElement.noUiSlider.reset();
+  resetMap();
+  formFilter.reset();
 };
 
 const activateAddForm = () => {
   activateAdvertForm();
   setStartAddressValue();
-  setAdFormActions();
-  slider();
+  setAdFormActions(renderSuccessMessage, renderPostErrorMessage);
+  initSlider();
   addPhotoInputsListeners();
   resetButton.addEventListener('click', onResetButtonClick);
 };
 
+const setMapChange = (data) => {
+  formFilter.addEventListener('change', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      markerGroup.clearLayers();
+      resetMap();
+      addMarkerGroup(data);
+    }, TIME_INTERVAL);
+  });
+};
+
+const getDataCallback = (data) => {
+  activateMapFilterForm();
+  addMarkerGroup(data);
+  setMapChange(data);
+};
+
 const initMap = () => {
   interactiveMap.on('load', () => {
+    getData(getDataCallback, renderGetErrorMessage);
     activateAddForm();
-    activateMapFilterForm();
-    setStartAddressValue();
-    addMarkerGroup(offers);
   })
-    .setView(START_LOCATION, 12);
+    .setView(START_LOCATION, MAP_ZOOM);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -93,4 +128,4 @@ const initMap = () => {
   interactiveMarker.on('moveend', onMarkerMove);
 };
 
-export {initMap};
+export {initMap, resetMap, setStartAddressValue};
